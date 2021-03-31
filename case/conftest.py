@@ -9,43 +9,7 @@ from pages.users_login_page import UsersLoginPage
 from pages.users_feedbackiframe_page import UsersFeedbackiframePage
 from pages.users_userinfo_page import UsersUserInfoPage
 
-# # 命令行参数
-# def pytest_addoption(parser):
-#    '''添加命令行参数'''
-#    parser.addoption(
-#    '--headless', action="store",
-#    default='no', help='set chrome headless option yes or no'
-#    )
-#
-#
-# @pytest.fixture(scope="session")
-# def driver(request):
-#     """定义全局driver fixture，给其它地方作参数调用"""
-#     headless = request.config.getoption("--headless")
-#     chrome_options = Options()
-#     chrome_options.add_argument('--window-size=1920,1080')  # 设置当前窗口的宽度和高度
-#     if headless=="yes":
-#         chrome_options.add_argument('--headless')  # 无界面
-#
-#     _driver = webdriver.Chrome(chrome_options=chrome_options)
-#
-#     def end():
-#         print("全部用例执行完后 teardown quit dirver")
-#         time.sleep(5)
-#         _driver.quit()
-#
-#     request.addfinalizer(end)
-#     return _driver
 
-
-
-# @pytest.fixture(scope="session", name="driver")
-# def browser():
-#     driver = webdriver.Chrome()
-#     driver.maximize_window()
-#     yield driver
-#     # quit是退出浏览器
-#     driver.quit()
 
 
 # 下面的方式可以判断当前系统是windows还是linux
@@ -55,9 +19,18 @@ from pages.users_userinfo_page import UsersUserInfoPage
 def browser():
     '''定义全局driver'''
     if platform.system() == 'Windows':
-        # windows系统
-        _driver = webdriver.Chrome()
-        _driver.maximize_window()
+        # windows系统有界面
+        # _driver = webdriver.Chrome()
+        # _driver.maximize_window
+
+
+        #window无界面
+        chrome_options = Options()
+        chrome_options.add_argument('--window-size=1920,1080')  # 设置当前窗口的宽度和高度
+        chrome_options.add_argument('--headless')  # 无界面
+        _driver = webdriver.Chrome(chrome_options=chrome_options)
+
+
 
     else:
         # linux启动
