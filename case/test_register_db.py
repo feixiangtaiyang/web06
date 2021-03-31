@@ -6,7 +6,7 @@ import pytest
 #     # 删除
 #     sql = 'DELETE FROM users_userprofile WHERE username = "65321@qq.com";'
 #     db.execute(sql)
-
+# @@@@
 
 class TestRegister():
 
