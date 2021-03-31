@@ -2,20 +2,78 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import platform
+import time
 from pages.register_page import RegisterPage
 from common.connect_msysql import DbConnect, dbinfo
 from pages.users_login_page import UsersLoginPage
 from pages.users_feedbackiframe_page import UsersFeedbackiframePage
 from pages.users_userinfo_page import UsersUserInfoPage
 
+# # 命令行参数
+# def pytest_addoption(parser):
+#    '''添加命令行参数'''
+#    parser.addoption(
+#    '--headless', action="store",
+#    default='no', help='set chrome headless option yes or no'
+#    )
+#
+#
+# @pytest.fixture(scope="session")
+# def driver(request):
+#     """定义全局driver fixture，给其它地方作参数调用"""
+#     headless = request.config.getoption("--headless")
+#     chrome_options = Options()
+#     chrome_options.add_argument('--window-size=1920,1080')  # 设置当前窗口的宽度和高度
+#     if headless=="yes":
+#         chrome_options.add_argument('--headless')  # 无界面
+#
+#     _driver = webdriver.Chrome(chrome_options=chrome_options)
+#
+#     def end():
+#         print("全部用例执行完后 teardown quit dirver")
+#         time.sleep(5)
+#         _driver.quit()
+#
+#     request.addfinalizer(end)
+#     return _driver
+
+
+
+# @pytest.fixture(scope="session", name="driver")
+# def browser():
+#     driver = webdriver.Chrome()
+#     driver.maximize_window()
+#     yield driver
+#     # quit是退出浏览器
+#     driver.quit()
+
+
+# 下面的方式可以判断当前系统是windows还是linux
+
 
 @pytest.fixture(scope="session", name="driver")
 def browser():
-    driver = webdriver.Chrome()
-    driver.maximize_window()
-    yield driver
+    '''定义全局driver'''
+    if platform.system() == 'Windows':
+        # windows系统
+        _driver = webdriver.Chrome()
+        _driver.maximize_window()
+
+    else:
+        # linux启动
+        chrome_options = Options()
+        chrome_options.add_argument('--window-size=1920,1080')  # 设置当前窗口的宽度和高度
+        chrome_options.add_argument('--no-sandbox')  # 解决DevToolsActivePort文件不存在报错问题
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_argument('--disable-gpu')   # 禁用GPU硬件加速。如果软件渲染器没有就位，则GPU进程将不会启动。
+        chrome_options.add_argument('--headless')  # 无界面
+
+        # _driver = webdriver.Chrome()
+        _driver = webdriver.Chrome(chrome_options=chrome_options)
+
+    yield _driver
     # quit是退出浏览器
-    driver.quit()
+    _driver.quit()
 
 
 @pytest.fixture(scope="session")
